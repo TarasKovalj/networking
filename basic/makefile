@@ -1,4 +1,4 @@
-all: ccomp clink
+all: clean ccomp clink scomp slink
 
 client: client.c
 	gcc -o client client.c

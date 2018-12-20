@@ -9,13 +9,17 @@ int main()
     int soc;
     int soc1;
 	int c;
-	char buf[1];
+	char buf[17];
+	buf[16]=(char)NULL;
 
     local.sin_family = AF_INET;
     local.sin_port = htons(7500);	//port
     local.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    soc = socket(AF_INET, SOCK_STREAM, 0);
+    printf("Server test \n");
+	printf("wait data... \n");
+	
+	soc = socket(AF_INET, SOCK_STREAM, 0);
     if(soc<0)//soc==INVALID_SOCKET
     {
         perror("socket request error");
@@ -23,7 +27,7 @@ int main()
     }
 
     c = bind(soc, (struct sockaddr*)&local, sizeof(local));
-    if(c)
+    if(c<0)
     {
         perror("bind request error");
         //exit(1);
@@ -41,14 +45,14 @@ int main()
 		perror("Accept request error");
 	}
 
-	c = recv(soc, buf, 1, 0);
+	c = recv(soc1, buf, 16, 0);
 	if(c<=0)
 	{
-		perror("recv request error");
+		perror("recv request error \n");
 	}
-	else printf("%c\n", buf[0]);
+	else printf("RECIEVED DATA: %s\n", buf);
 	
-	c = send(soc1, "2", 1, 0);
+	c = send(soc1, "text from server", 16, 0);
 	if(c<=0)
 	{
 		perror("send request error");
