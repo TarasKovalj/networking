@@ -1,2 +1,0 @@
-Input text file for transfer. TCP data transfer from client to server.
-I should write a long text for my program
