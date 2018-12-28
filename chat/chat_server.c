@@ -2,13 +2,15 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include "server_func.h"
 #include "defines.h"
 
 int main()
 {
     int soc1, soc2;
-	int c;
+	int c1,c2;
 	char recv_buf[BUFSIZE+1];
 	char send_buf[BUFSIZE+1];
 	
@@ -29,42 +31,57 @@ int main()
 	soc2 = server_create(local2);
 
 	//server_recv_file("out.jpg", file_buf, BUFSIZE, soc1);
-	//while(1)
-	//{
-		c = recv(soc1, recv_buf, BUFSIZE, 0);
-		if(c <= 0)
-		{
-			perror("recv request error \n");
-		}
-		else
-		{
-			printf("%s\n", recv_buf);
-			//recv_buf[0] = 'X';
-		}
-		
-		c = send(soc1, recv_buf, BUFSIZE, 0);
-		if(c<=0)
-		{
-			perror("send request error");
-		}
-		
-		
-		c = recv(soc2, recv_buf, BUFSIZE, 0);
-		if(c <= 0)
-		{
-			perror("recv request error \n");
-		}
-		else
-		{
-			printf("%s\n", recv_buf);
-		}
-		
-		c = send(soc2, recv_buf, BUFSIZE, 0);
-		if(c<=0)
-		{
-			perror("send request error");
-		}
-	//}
+	pthread_t thread1, thread2;	// thread struct
+	int tret1, tret2;							// thread return
 	
-	close(soc1);
+	void thread1_func(void)
+	{
+		int cr1, cs1;
+		while(1)
+		{	
+			do {
+				cr1 = recv(soc1, recv_buf, BUFSIZE, 0);
+				if ( cr1 > 0 ) {
+					printf("%s\n", recv_buf);
+					cs1 = send(soc1, recv_buf, BUFSIZE, 0);
+					cs1 = send(soc2, recv_buf, BUFSIZE, 0);
+				}
+				else if ( cr1 == 0 )
+					cr1 = 0;//printf("connection1 closed\n");
+				else
+					printf("recv1 error\n");
+			} while ( cr1 > 0 );
+			
+			sleep(1);
+		}
+	}
+		
+	void thread2_func(void)
+	{
+		int cr2, cs2;
+		while(1)
+		{
+			do {
+				int cr2 = recv(soc2, recv_buf, BUFSIZE, 0);
+				if ( cr2 > 0 ) {
+					printf("%s\n", recv_buf);
+					cs2 = send(soc2, recv_buf, BUFSIZE, 0);
+					cs2 = send(soc1, recv_buf, BUFSIZE, 0);
+				}
+				else if ( cr2 == 0 )
+					cr2 = 0;//printf("connection2 closed\n");
+				else
+					printf("recv2 error\n");
+			} while ( cr2 > 0 );
+			
+			sleep(1);
+		}
+	}
+	
+	tret1 = pthread_create(&thread1, NULL, thread1_func, NULL);
+	tret2 = pthread_create(&thread2, NULL, thread2_func, NULL);
+	pthread_join( thread1, NULL);
+	pthread_join( thread2, NULL);
+
+	//close(soc1);
 }
