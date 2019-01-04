@@ -12,14 +12,12 @@ int server_create(struct sockaddr_in local)
 	{
 		perror("socket request error");
 	}
-
-	int c = bind(soc, (struct sockaddr_in*)&local, sizeof(local));
+		int c = bind(soc, (struct sockaddr_in*)&local, sizeof(local));
 	if(c < 0)
 	{
 		perror("bind request error");
 	}
-
-	c = listen(soc,5);	
+		c = listen(soc,5);	
 	if(c)
 	{
 		perror("Listen request error");

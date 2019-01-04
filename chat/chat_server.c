@@ -6,10 +6,12 @@
 #include <pthread.h>
 #include "server_func.h"
 #include "defines.h"
+#define N 3
 
 int main()
 {
     int soc1, soc2, soc3;
+	int soc[N];
 	int c1,c2;
 	char recv_buf[BUFSIZE+1];
 	char send_buf[BUFSIZE+1];
@@ -32,19 +34,16 @@ int main()
     printf("Server test \n");
 	printf("wait data... \n");
 	
-	soc1 = server_create(local);
-	soc2 = server_create(local2);
-	soc3 = server_create(local3);
-
-	//server_recv_file("out.jpg", file_buf, BUFSIZE, soc1);
 	pthread_t thread1, thread2, thread3;	// thread struct
 	int tret1, tret2, tret3;							// thread return
 	
-	void thread1_func(void)
+	void *thread1_func(void)
 	{
+		soc1 = server_create(local);
+		
 		int cr1, cs1;
 		while(1)
-		{	
+		{
 			do {
 				cr1 = recv(soc1, recv_buf, BUFSIZE, 0);
 				if ( cr1 > 0 ) {
@@ -63,8 +62,10 @@ int main()
 		}
 	}
 		
-	void thread2_func(void)
+	void *thread2_func(void)
 	{
+		soc2 = server_create(local2);
+		
 		int cr2, cs2;
 		while(1)
 		{
@@ -86,8 +87,10 @@ int main()
 		}
 	}
 	
-	void thread3_func(void)
+	void *thread3_func(void)
 	{
+		soc3 = server_create(local3);
+		
 		int cr3, cs3;
 		while(1)
 		{
@@ -109,9 +112,9 @@ int main()
 		}
 	}
 	
-	tret1 = pthread_create(&thread1, NULL, thread1_func, NULL);
-	tret2 = pthread_create(&thread2, NULL, thread2_func, NULL);
-	tret3 = pthread_create(&thread3, NULL, thread3_func, NULL);
+	tret1 = pthread_create(&thread1, NULL, (void *)thread1_func, NULL);
+	tret2 = pthread_create(&thread2, NULL, (void *)thread2_func, NULL);
+	tret3 = pthread_create(&thread3, NULL, (void *)thread3_func, NULL);
 	pthread_join( thread1, NULL);
 	pthread_join( thread2, NULL);
 	pthread_join( thread3, NULL);

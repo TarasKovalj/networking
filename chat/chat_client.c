@@ -13,14 +13,16 @@ int main()
     struct sockaddr_in serv_addr;
     int soc;
     int c;
-	//recieve string
 	char recv_buf[BUFSIZE+1];
-	//recv_buf[BUFSIZE] = (char)NULL;
 
 	char send_buf[BUFSIZE+1] = {"C1: "};
-
+	
+	uint16_t port;
+	printf("Please write the port number: ");
+	scanf(" %i", &port);
+	send_buf[1] = port + 48;//set name in string
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(7500);	//port
+    serv_addr.sin_port = htons(7500 + port);	//port
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	printf("Client test \n");

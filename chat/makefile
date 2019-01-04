@@ -20,12 +20,11 @@ client_func.o: client_func.c
 server_func.o: server_func.c
 	gcc -c server_func.c
 
-chat: clean chat_client chat_server
-	
-chat_client: chat_client.c client_func.c
-	gcc -o chat_client chat_client.c client_func.c
-chat_server: chat_server.c server_func.c
-	gcc -o chat_server chat_server.c server_func.c
+chat: clean cc cs
 
+cc:
+	gcc -o chat_client chat_client.c client_func.c -pthread
+cs: server_func.c server_func.h
+	gcc -o chat_server chat_server.c server_func.c -pthread
 clean:
 	rm -rf *.o

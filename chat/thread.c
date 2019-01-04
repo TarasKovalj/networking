@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+void sleep(int x);
+
 int main()
 {
     printf("Thread_test \n");
@@ -12,8 +14,13 @@ int main()
 	
 	void thread1_func(void)
 	{
+		char i;
+		scanf("%c", &i);
 		while(1)
 		{
+			scanf("%c", &i);
+			printf("%c\n", i-32);
+			//while(1);
 			printf("Thread1 \n");
 			sleep(1);
 		}
@@ -23,6 +30,16 @@ int main()
 	{
 		while(1)
 		{
+			char i;
+			//scanf("%c", &i);
+			long int z = 0;
+			//while(1)
+			//{
+				//scanf("%c", &i);
+				//printf("%c\n", i-32);
+				//if (z%100000000==500) printf("W\n");
+				//z++;
+			//}
 			printf("Thread2 \n");
 			sleep(1);
 		}
