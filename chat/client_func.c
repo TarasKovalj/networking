@@ -27,7 +27,7 @@ void client_send_file(char * file_name, char * buffer, char buffer_size, int soc
 	FILE * pfile = fopen(file_name, "r");
 	if (pfile!=NULL)
 	{
-		while ( feof(pfile)==0 )
+		while ( feof(pfile) == 0 )
 		{
 			int readres = fread(buffer, 1, buffer_size, pfile);
 			buffer[buffer_size] = readres;

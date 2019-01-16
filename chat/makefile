@@ -1,30 +1,13 @@
-all: clean ccomp clink scomp slink
+all: clean chat
 
-client: client.c
-	gcc -o client client.c
-server: server.c 
-	gcc -o server server.c
-
-ccomp: 
-	gcc -c client.c
-clink: client_func.o
-	gcc -o client client.o client_func.o
-
-scomp: 
-	gcc -c server.c
-slink: server_func.o
-	gcc -o server server.o server_func.o
-
-client_func.o: client_func.c
-	gcc -c client_func.c
-server_func.o: server_func.c
-	gcc -c server_func.c
-
-chat: clean cc cs
+chat: clean cc cs cht
 
 cc:
 	gcc -o chat_client chat_client.c client_func.c -pthread
 cs: server_func.c server_func.h
 	gcc -o chat_server chat_server.c server_func.c -pthread
+cht:
+	gcc -o cht cht.c server_func.c -pthread
+
 clean:
 	rm -rf *.o
